@@ -69,6 +69,7 @@ object Application extends App{
     log.info("\n3. Delete from Cart")
     log.info("\n4. View Cart")
     log.info("\n5. Checkout")
+    log.info("\n6. Admin Mode")
     val choice = input.nextInt()
     choice match {
       case 1 =>
@@ -76,6 +77,7 @@ object Application extends App{
         userMenu(db, cart)
       case 2 =>
         admin.viewProducts(db)
+<<<<<<< HEAD
         log.info("\nEnter id of product")
         val id = input.nextInt()
         val item = db.getOrElse(id, null)
@@ -85,6 +87,16 @@ object Application extends App{
       case 3 =>
         user.viewCart(cart)
         log.info("\nEnter id of product to be removed")
+=======
+        log.info("\nSelect id of Product to be added")
+        val selectedId = input.nextInt()
+        val item = db.getOrElse(selectedId, null)
+        val newCart = user.addToCart(cart, item, selectedId)
+        userMenu(db, newCart)
+      case 3 =>
+        admin.viewProducts(db)
+        log.info("\nEnter id: ")
+>>>>>>> 3fb6a8986006ef071b991beb2008174de6fc7f16
         val id = input.nextInt()
         val newCart = user.removeFromCart(cart, id)
         userMenu(db, newCart)
@@ -92,12 +104,21 @@ object Application extends App{
         user.viewCart(cart)
         userMenu(db, cart)
       case 5 =>
+<<<<<<< HEAD
         user.viewCart(cart)
         val list = cart.values.toList
         val total = user.checkout(list)
         log.info(s"\nTotal net bill: $total")
         userMenu(db, cart)
       case _ =>
+=======
+        user.checkout()
+      case 6 =>
+        adminMenu(db, cart)
+      case _ =>
+        log.info("Wrong choice")
+        userMenu(db, cart)
+>>>>>>> 3fb6a8986006ef071b991beb2008174de6fc7f16
     }
   }
 
