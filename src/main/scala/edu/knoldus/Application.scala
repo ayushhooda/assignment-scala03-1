@@ -11,11 +11,14 @@ object Application extends App{
   val log = Logger.getLogger(getClass)
   val input = new Scanner(System.in)
   val db: Map[Int, Product] = Map()
+  val cart: Map[Int, Product] = Map()
   val user = new UserOperations
   val admin = new AdminOperations
-  val id = 0
+  var id = 0
 
-  def adminMenu(db: Map[Int, Product]): Unit = {
+  adminMenu(db, cart)
+
+  def adminMenu(db: Map[Int, Product], cart: Map[Int, Product]): Unit = {
     log.info("\n1. Add a Product")
     log.info("\n2. Delete a Product")
     log.info("\n3. Update a Product")
@@ -30,14 +33,15 @@ object Application extends App{
         log.info("\nEnter Product Price: ")
         val productPrice = input.nextInt()
         val newItem = Product(productName, productPrice)
-        val newDb = admin.addOrUpdateProduct(db, newItem, id + 1)
-        adminMenu(newDb)
+        id = id + 1
+        val newDb = admin.addOrUpdateProduct(db, newItem, id)
+        adminMenu(newDb, cart)
       case 2 =>
         admin.viewProducts(db)
         log.info("\nEnter id: ")
         val id = input.nextInt()
         val newDb = admin.deleteProduct(db, id)
-        adminMenu(newDb)
+        adminMenu(newDb, cart)
       case 3 =>
         log.info("\nEnter id for which you want to update: ")
         val id = input.nextInt()
@@ -47,18 +51,19 @@ object Application extends App{
         val productPrice = input.nextInt()
         val newItem = Product(productName, productPrice)
         val newDb = admin.addOrUpdateProduct(db, newItem, id)
-        adminMenu(newDb)
+        adminMenu(newDb, cart)
       case 4 =>
         admin.viewProducts(db)
+        adminMenu(db, cart)
       case 5 =>
-        userMenu(db)
+        userMenu(db, cart)
       case _ =>
         log.info("Wrong choice")
-        adminMenu(db)
+        adminMenu(db, cart)
     }
   }
 
-  def userMenu(db: Map[Int, Product]): Unit = {
+  def userMenu(db: Map[Int, Product], cart: Map[Int, Product]): Unit = {
     log.info("\n1. View all Products")
     log.info("\n2. Add to Cart")
     log.info("\n3. Delete from Cart")
@@ -67,24 +72,32 @@ object Application extends App{
     val choice = input.nextInt()
     choice match {
       case 1 =>
-        log.info("")
+        admin.viewProducts(db)
+        userMenu(db, cart)
       case 2 =>
+        admin.viewProducts(db)
+        log.info("\nEnter id of product")
+        val id = input.nextInt()
+        val item = db.getOrElse(id, null)
+        if(item != null)
+        user.addToCart(cart, item, id)
+        userMenu(db, cart)
       case 3 =>
+        user.viewCart(cart)
+        log.info("\nEnter id of product to be removed")
+        val id = input.nextInt()
+        val newCart = user.removeFromCart(cart, id)
+        userMenu(db, newCart)
       case 4 =>
+        user.viewCart(cart)
+        userMenu(db, cart)
       case 5 =>
+        user.viewCart(cart)
+        val list = cart.values.toList
+        val total = user.checkout(list)
+        log.info(s"\nTotal net bill: $total")
+        userMenu(db, cart)
       case _ =>
-    }
-  }
-
-  def mainMenu(): Unit = {
-    log.info("\n1. User Mode")
-    log.info("\n2. Admin Mode")
-    log.info("\nEnter your choice: ")
-    val choice = input.nextInt()
-    choice match {
-      case 1 => userMenu(db)
-      case 2 => adminMenu(db)
-      case _ => log.info("Wrong choice")
     }
   }
 
