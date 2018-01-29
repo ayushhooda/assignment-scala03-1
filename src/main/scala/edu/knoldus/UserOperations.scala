@@ -32,6 +32,10 @@ class UserOperations {
     innerCalculate(list, 0)
   }
 
+<<<<<<< HEAD
+  // View Cart
+=======
+>>>>>>> 3fb6a8986006ef071b991beb2008174de6fc7f16
   def viewCart(cart: Map[Int, Product]): Unit = {
     cart.foreach {
       case (id, item) => print(s"\n$id     ${item.name}     ${item.price}")
