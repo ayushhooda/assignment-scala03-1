@@ -70,8 +70,9 @@ object Application extends App {
     log.info("\n2. Add to Cart")
     log.info("\n3. Delete from Cart")
     log.info("\n4. View Cart")
-    log.info("\n5. Checkout")
-    log.info("\n6. Admin Mode")
+    log.info("\n5. Sort by Price")
+    log.info("\n6. Checkout")
+    log.info("\n7. Admin Mode")
     val choice = input.nextInt()
     choice match {
       case 1 =>
@@ -95,12 +96,15 @@ object Application extends App {
         user.viewCart(cart)
         userMenu(db, cart)
       case 5 =>
+        log.info(admin.viewProducts(user.sortByPrice(db)))
+        userMenu(db, cart)
+      case 6 =>
         user.viewCart(cart)
         val list = cart.values.toList
         val total = user.checkout(list)
         log.info(s"\nTotal net bill: $total")
         userMenu(db, cart)
-      case 6 =>
+      case 7 =>
         adminMenu(db, cart)
       case _ =>
         log.info("Wrong choice")
@@ -108,9 +112,5 @@ object Application extends App {
 
     }
   }
-
-  //  val list = map3.values.toList
-  //  log.info(ListMap(map3.toSeq.sortWith(_._2.price < _._2.price): _*))
-  //  obj.viewProducts(map3)
 
 }

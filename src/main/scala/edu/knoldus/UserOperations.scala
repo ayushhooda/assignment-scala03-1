@@ -39,4 +39,9 @@ class UserOperations {
     }
   }
 
+  // Sort Products by Price
+  def sortByPrice(db: Map[Int, Product]): Map[Int, Product] = {
+    db.toList.sortWith((a, b) => a._2.price > b._2.price).toMap
+  }
+
 }
